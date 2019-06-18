@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Index Page</title>
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+
+    <!-- Popper JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+
+    <!-- Latest compiled JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+    <!-- Default CSS file -->
+    <link rel="stylesheet" href="css/default.css">
+</head>
+<body ng-app="">
+    <div ng-include="'template/navbar.html'"></div>
+
+    <div class="d-flex h-75">
+        <!-- This page is dedicated for dealer registration. -->
+        <div class="container my-auto">
+            <div class="row">
+                <div class="col-4">
+                    <div class="card shadow">
+                        <div class="card-body">
+                            <h1 class="display-3">Login</h1>
+
+                            <form>
+                                <div class="form-group">
+                                    <label for="email">Email</label>
+                                    <input type="email" class="form-control" name="email" id="email"
+                                        aria-describedby="emailHelpId" placeholder="Email" required>
+                                    <small id="emailHelpId" class="form-text text-muted">Please enter your
+                                        email address.</small>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="passwd">Password</label>
+                                    <input type="password" class="form-control" name="passwd" id="passwd"
+                                        placeholder="Password" minlength="8" maxlength="32" required>
+                                </div>
+
+                                <div class="custom-control custom-checkbox mb-3">
+                                    <input type="checkbox" class="custom-control-input" id="remember"
+                                        name="remember">
+                                    <label class="custom-control-label" for="remember">Remember me</label>
+                                </div>
+
+                                <button type="submit" class="btn btn-light w-100 mb-3">Login</button>
+
+                                <button type="reset" class="btn btn-danger w-100">Reset</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-8">
+                    <h1 class="display-4">Laboris non aute aliquip.</h1>
+                    <p>Laboris nostrud non incididunt consectetur sit est nulla. Enim eiusmod ullamco labore cupidatat proident id officia nostrud ullamco duis occaecat do labore elit. Dolor ex Lorem velit mollit aliqua ea ut mollit aliqua mollit anim. Cupidatat ut esse fugiat pariatur eiusmod pariatur dolore sunt. Excepteur ex ex exercitation cillum elit incididunt anim labore enim aute sit. Nulla sunt et irure fugiat do sit minim culpa do ad et labore. Deserunt duis dolor ea tempor adipisicing amet reprehenderit eiusmod. Culpa eu duis amet ut aute. Commodo elit consectetur do sint ut velit. Nisi sunt ullamco nisi aute dolor ex commodo magna et aliqua ex sint mollit occaecat. Consectetur non est est ad sint do excepteur tempor tempor veniam eiusmod enim.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- angular js -->
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+</body>
+</html>
