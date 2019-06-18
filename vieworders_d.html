@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -21,6 +22,7 @@
     <!-- Default CSS file -->
     <link rel="stylesheet" href="css/default.css">
 </head>
+
 <body ng-app="">
     <div ng-include="'template/navbar_d.html'"></div>
 
@@ -35,6 +37,7 @@
                             <th>Order ID</th>
                             <th>Order Date</th>
                             <th>Address</th>
+                            <th>Status</th>
                             <th>Total Price</th>
                             <th style="width: 350px">Action</th>
                         </tr>
@@ -44,12 +47,17 @@
                             <td scope="row">1</td>
                             <td>7/3/2049</td>
                             <td>Mongolia</td>
+                            <td>Delivery</td>
                             <td>$ 33.8749</td>
                             <td>
-                                <button type="button" class="btn btn-light">View</button>
-                                <button type="button" class="btn btn-light">Modify</button>
-                                <button type="button" class="btn btn-light">Complete</button>
-                                <button type="button" class="btn btn-light">Cancel</button>
+                                <button type="button" class="btn btn-light" data-toggle="modal"
+                                    data-target="#viewmodal">View</button>
+                                <button type="button" class="btn btn-light" data-toggle="modal"
+                                    data-target="#modifymodal">Modify</button>
+                                <button type="button" class="btn btn-light" data-toggle="modal"
+                                    data-target="#completemodal">Complete</button>
+                                <button type="button" class="btn btn-light" data-toggle="modal"
+                                    data-target="#cancelmodal">Cancel</button>
                             </td>
                         </tr>
                     </tbody>
@@ -58,7 +66,102 @@
         </div>
     </div>
 
+    <!-- Modal -->
+    <div class="modal fade" id="viewmodal" tabindex="-1" role="dialog" aria-labelledby="modelTitleId"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Confirmation</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    Are you confirm to view selected order?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <a href="vieworder_d.html">
+                        <button type="button" class="btn btn-primary">View</button>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="modifymodal" tabindex="-1" role="dialog" aria-labelledby="modelTitleId"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Confirmation</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="container-fluid">
+                        Are you confirm to cancel selected order?
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <a href="modifyorder.html">
+                        <button type="button" class="btn btn-primary">Modify</button>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="completemodal" tabindex="-1" role="dialog" aria-labelledby="modelTitleId"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Confirmation</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    Are you confirm to complete selected order?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Complete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="cancelmodal" tabindex="-1" role="dialog" aria-labelledby="modelTitleId"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Confirmation</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    Are you confirm to cancel selected order?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- angular js -->
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
 </body>
+
 </html>

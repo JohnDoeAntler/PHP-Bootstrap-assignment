@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Index Page</title>
+    <title>Modify Order Page</title>
 
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
@@ -29,7 +29,7 @@
     <div class="container mt-5">
         <div class="row">
             <div class="col">
-                <h1 class="display-3">Place Order</h1>
+                <h1 class="display-3">Modify Order</h1>
 
                 <table id="orderpart" class="table">
                     <caption>Ordered Items</caption>
@@ -103,7 +103,17 @@
                 }
             ];
 
-            $scope.orderparts = [];
+            $scope.orderparts = 
+            [
+                {
+                    product: $scope.products[0],
+                    quantity : 4
+                },
+                {
+                    product: $scope.products[1],
+                    quantity : 5
+                }
+            ];
 
             $scope.addrow = () => {
                 if ($scope.product != null && $scope.quantity != null)
