@@ -23,7 +23,7 @@
 	<link rel="stylesheet" href="css/default.css">
 </head>
 
-<body ng-app="">
+<body ng-app="app" ng-controller="controller">
 	<div ng-include="'template/navbar_d.html'"></div>
 
 	<div class="container mt-5">
@@ -41,17 +41,11 @@
 						</tr>
 					</thead>
 					<tbody>
-						<tr>
-							<td scope="row">Whatever</td>
-							<td>8.5</td>
-							<td>30</td>
-							<td>Avaiable</td>
-						</tr>
-						<tr>
-							<td scope="30">Toilet</td>
-							<td>5</td>
-							<td>31</td>
-							<td>Unavailable</td>
+						<tr ng-repeat="part in parts">
+							<td scope="row">{{part.partName}}</td>
+							<td>{{part.stockPrice}}</td>
+							<td>{{part.stockQuantity}}</td>
+							<td>{{part.stockStatus}}</td>
 						</tr>
 					</tbody>
 				</table>
@@ -61,6 +55,27 @@
 
 	<!-- angular js -->
 	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+	<script>
+		var app = angular.module("app", []);
+		
+		app.controller("controller", ($scope) => {
+			$scope.parts = [{
+				partNumber: 1,
+				partName: "Whatever",
+				email: "baice@diofa.com",
+				stockQuantity: 30,
+				stockPrice: 8.5,
+				stockStatus: "Available"
+			}, {
+				partNumber: 2,
+				partName: "Toilet",
+				email: "bagagi@tunnen.my",
+				stockQuantity: 31,
+				stockPrice: 5,
+				stockStatus: "Available"
+			}];
+		});
+	</script>
 </body>
 
 </html>

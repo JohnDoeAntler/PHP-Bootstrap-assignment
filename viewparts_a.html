@@ -23,7 +23,7 @@
 	<link rel="stylesheet" href="css/default.css">
 </head>
 
-<body ng-app="">
+<body ng-app="app" ng-controller="controller">
 	<div ng-include="'template/navbar_a.html'"></div>
 
 	<div class="container mt-5">
@@ -43,30 +43,17 @@
 						</tr>
 					</thead>
 					<tbody>
-						<tr>
-							<td scope="row">Whatever</td>
-							<td>8.5</td>
-							<td>30</td>
-							<td>gebkombam@ulirab.va</td>
-							<td>Avaiable</td>
+						<tr ng-repeat="part in parts">
+							<td scope="row">{{part.partName}}</td>
+							<td>{{part.stockPrice}}</td>
+							<td>{{part.stockQuantity}}</td>
+							<td>{{part.email}}</td>
+							<td>{{part.stockStatus}}</td>
 							<td>
-								<a href="editpart.html">
-									<button type="button" class="btn btn-light">Edit</button>
-								</a>
-								<button type="button" class="btn btn-light">Remove</button>
-							</td>
-						</tr>
-						<tr>
-							<td scope="30">Toilet</td>
-							<td>5</td>
-							<td>31</td>
-							<td>gufote@sazuvfa.ua</td>
-							<td>Unavailable</td>
-							<td>
-								<a href="editpart.html">
-									<button type="button" class="btn btn-light">Edit</button>
-								</a>
-								<button type="button" class="btn btn-light">Remove</button>
+								<button type="button" class="btn btn-light" data-toggle="modal"
+									data-target="#editmodal">Edit</button>
+								<button type="button" class="btn btn-light" data-toggle="modal"
+									data-target="#removemodal">Remove</button>
 							</td>
 						</tr>
 					</tbody>
@@ -75,8 +62,77 @@
 		</div>
 	</div>
 
+	<!-- Modal -->
+	<div class="modal fade" id="editmodal" tabindex="-1" role="dialog" aria-labelledby="modelTitleId"
+		aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title">Confirmation</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					Are you confirm to edit the part?
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+					<a href="editpart.html">
+						<button type="button" class="btn btn-primary">Edit</button>
+					</a>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Modal -->
+	<div class="modal fade" id="removemodal" tabindex="-1" role="dialog" aria-labelledby="modelTitleId"
+		aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title">Confirmation</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<div class="container-fluid">
+						Are you confirm to remove the selected part?
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+					<button type="button" class="btn btn-danger">Remove</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
 	<!-- angular js -->
 	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+	<script>
+		var app = angular.module("app", []);
+		
+		app.controller("controller", ($scope) => {
+			$scope.parts = [{
+				partNumber: 1,
+				partName: "Whatever",
+				email: "baice@diofa.com",
+				stockQuantity: 30,
+				stockPrice: 8.5,
+				stockStatus: "Available"
+			}, {
+				partNumber: 2,
+				partName: "Toilet",
+				email: "bagagi@tunnen.my",
+				stockQuantity: 31,
+				stockPrice: 5,
+				stockStatus: "Available"
+			}];
+		});
+	</script>
 </body>
 
 </html>

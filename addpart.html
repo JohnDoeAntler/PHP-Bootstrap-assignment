@@ -32,25 +32,25 @@
 				<form>
 					<div class="form-group">
 					  <label for="name">Product Name</label>
-					  <input type="text" class="form-control" name="name" id="name" aria-describedby="helpId" placeholder="Name">
+					  <input type="text" class="form-control" name="name" id="name" aria-describedby="helpId" placeholder="Name" required>
 					  <small id="helpId" class="form-text text-muted">Enter your product name here.</small>
 					</div>
 
 					<div class="form-group">
 					  <label for="price">Price</label>
-					  <input type="number" class="form-control" name="price" id="price" aria-describedby="helpId" placeholder="Price">
+					  <input type="text" class="form-control" name="price" id="price" aria-describedby="helpId" pattern="^\d*.?\d*$" placeholder="Price" required>
 					  <small id="helpId" class="form-text text-muted">Enter the price here.</small>
 					</div>
 
 					<div class="form-group">
 					  <label for="quantity">Quantity</label>
-					  <input type="text" class="form-control" name="quantity" id="quantity" aria-describedby="helpId" placeholder="Quantity">
+					  <input type="number" class="form-control" name="quantity" id="quantity" aria-describedby="helpId" placeholder="Quantity" required>
 					  <small id="helpId" class="form-text text-muted">Enter the quantity here.</small>
 					</div>
 
 					<div class="form-group">
 						<label for="status">Status</label>
-						<select class="custom-select" name="status" id="status">
+						<select class="custom-select" name="status" id="status" required>
 							<option selected>Available</option>
 							<option>Unavailable</option>
 						</select>
