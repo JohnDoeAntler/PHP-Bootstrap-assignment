@@ -57,7 +57,7 @@
 
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownId">
                     <a class="dropdown-item" href="profile_a.html">View profile</a>
-                    <a class="dropdown-item" href="login.html">Sign out</a>
+                    <a class="dropdown-item" href="signout.php">Sign out</a>
                 </div>
             </span>
 
