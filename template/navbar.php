@@ -17,7 +17,7 @@
                 <a class="nav-link" href="vieworders_a.html">View orders<span class="sr-only">(current)</span></a>
             </li>
             <li class="nav-item active">
-                <a class="nav-link" href="viewparts_a.html">View parts<span class="sr-only">(current)</span></a>
+                <a class="nav-link" href="viewparts.php">View parts<span class="sr-only">(current)</span></a>
             </li>
 
             <?php

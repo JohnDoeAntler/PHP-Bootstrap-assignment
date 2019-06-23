@@ -43,11 +43,11 @@
 			{
 				if ($index == 0)
 				{
-					$str .= "WHERE $key = $val";
+					$str .= "WHERE $key = '$val'";
 				}
 				else 
 				{
-					$str .= "AND $key = $val";
+					$str .= "AND $key = '$val'";
 				}
 
 				$index++;
@@ -57,7 +57,7 @@
 		$result = $conn->query("SELECT * FROM $table $str;");
 
 		$rows = array();
-
+		
 		while ($row = mysqli_fetch_assoc($result))
 		{
 			$rows[] = $row;
@@ -83,15 +83,15 @@
 				// SELECT FIRST ARG AS CONDITION
 				if ($index == 0)
 				{
-					$condition = "$key = $val";
+					$condition = "$key = '$val'";
 				}
 				else if (empty($modifications))
 				{
-					$modifications = "$key = $val";
+					$modifications .= "$key = '$val'";
 				}
 				else
 				{
-					$modifications .= ", $key = $val";
+					$modifications .= ", $key = '$val'";
 				}
 
 				$index++;
