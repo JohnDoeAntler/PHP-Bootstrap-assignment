@@ -1,3 +1,9 @@
+<?php
+	session_start();
+	if (!isset($_SESSION["role"]) || !isset($_POST["partNumber"])){
+		header("location: profile.php");
+	}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -21,7 +27,7 @@
     <!-- Default CSS file -->
     <link rel="stylesheet" href="css/default.css">
 </head>
-<body ng-app="">
+<body ng-app="app" ng-controller="controller">
 	<div ng-include="'template/navbar.php'"></div>
 	
 	<div class="container my-5">
@@ -32,37 +38,75 @@
 				<form>
 					<div class="form-group">
 					  <label for="name">Product Name</label>
-					  <input type="text" class="form-control" name="name" id="name" aria-describedby="helpId" placeholder="Name" value="Whatever">
+					  <input type="text" class="form-control" name="name" id="name" aria-describedby="helpId" placeholder="Name" ng-model="partName">
 					  <small id="helpId" class="form-text text-muted">Enter your product name here.</small>
 					</div>
 
 					<div class="form-group">
 					  <label for="price">Price</label>
-					  <input type="number" class="form-control" name="price" id="price" aria-describedby="helpId" placeholder="Price" value="8.5">
+					  <input type="text" class="form-control" name="price" id="price" aria-describedby="helpId" placeholder="Price" ng-model="stockPrice">
 					  <small id="helpId" class="form-text text-muted">Enter the price here.</small>
 					</div>
 
 					<div class="form-group">
 					  <label for="quantity">Quantity</label>
-					  <input type="text" class="form-control" name="quantity" id="quantity" aria-describedby="helpId" placeholder="Quantity" value="30">
+					  <input type="number" class="form-control" name="quantity" id="quantity" aria-describedby="helpId" placeholder="Quantity" ng-model="stockQuantity">
 					  <small id="helpId" class="form-text text-muted">Enter the quantity here.</small>
 					</div>
 
-					<div class="form-group">
-						<label for="status">Status</label>
-						<select class="custom-select" name="status" id="status">
-							<option selected>Available</option>
-							<option>Unavailable</option>
-						</select>
-					</div>
-
-					<button type="submit" class="btn btn-light">Edit part</button>
+					<button type="button" class="btn btn-light" data-toggle="modal" data-target="#editmodal">Edit part</button>
 				</form>
 			</div>
 		</div>
 	</div>
 
+	<!-- Modal -->
+	<div class="modal fade" id="editmodal" tabindex="-1" role="dialog" aria-labelledby="modelTitleId" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title">Confirmation</h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+				</div>
+				<div class="modal-body">
+					Are you confirm the changes?
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+					<button type="button" class="btn btn-primary" ng-click="edit()">Save Changes</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
     <!-- angular js -->
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+	
+	<script>
+		var app = angular.module("app", []);
+		app.controller("controller", ($scope, $http) => {
+
+			$http.get("api/part.php?partNumber=<?php echo $_POST["partNumber"] ?>").then(
+				function (response)
+				{
+					$scope.partNumber = response.data[0].partNumber;
+					$scope.partName = response.data[0].partName;
+					$scope.stockPrice = response.data[0].stockPrice;
+					$scope.stockQuantity = parseInt(response.data[0].stockQuantity);								
+				}
+			);
+
+			$scope.edit = () => {
+				$http.put(`api/part.php?partNumber=${$scope.partNumber}&partName=${$scope.partName}&stockQuantity=${$scope.stockQuantity}&stockPrice=${$scope.stockPrice}`).then(
+					function (response)
+					{
+						console.log(response);
+					}
+				);
+			}
+		});
+	</script>
 </body>
 </html>

@@ -102,6 +102,8 @@
 
 		print ($conn->affected_rows > 0 ? "true" : "false");
 
+		echo "UPDATE $table SET $modifications WHERE $condition;";
+
 		$conn->close();
 	}
 ?>

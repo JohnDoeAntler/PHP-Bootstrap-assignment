@@ -99,6 +99,7 @@
 					<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
 					<form action="editpart.php" method="POST">
 						<input type="submit" class="btn btn-primary" value="Edit">
+						<input type="hidden" name="partNumber" ng-value="selectedPartNumber">
 					</form>
 				</div>
 			</div>
