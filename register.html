@@ -23,7 +23,7 @@
     <link rel="stylesheet" href="css/default.css">
 </head>
 
-<body ng-app="">
+<body ng-app="app" ng-controller="controller">
     <div ng-include="'template/navbar.php'"></div>
 
     <div class="d-flex h-75">
@@ -35,31 +35,31 @@
                         <div class="card-body">
                             <h1 class="display-3">Register</h1>
 
-                            <form>
+                            <form name="form" action="login.php" method="POST">
                                 <div class="container-fluid">
                                     <div class="row">
                                         <div class="col-6">
                                             <div class="form-group">
-                                                <label for="email">Email</label>
-                                                <input type="email" class="form-control" name="email" id="email"
-                                                    aria-describedby="emailHelpId" placeholder="Email" required>
-                                                <small id="emailHelpId" class="form-text text-muted">Please enter your
-                                                    email address.</small>
+                                                <label for="username">Username</label>
+                                                <input type="text" class="form-control" name="username" id="username"
+                                                    aria-describedby="usernameHelpId" placeholder="Username" ng-model="dealerID" required>
+                                                <small id="usernameHelpId" class="form-text text-muted">Please enter your
+                                                    username.</small>
                                             </div>
 
                                             <div class="form-group">
-                                                <label for="passwd">Password</label>
-                                                <input type="password" class="form-control" name="passwd" id="passwd"
-                                                    placeholder="Password" minlength="8" maxlength="32" required>
+                                                <label for="password">Password</label>
+                                                <input type="password" class="form-control" name="password" id="password"
+                                                    placeholder="Password" minlength="8" maxlength="32" ng-model="password" required>
                                             </div>
 
                                             <div class="form-group">
                                                 <label for="repasswd">Confirm Password</label>
                                                 <input type="password" class="form-control" name="repasswd" id="repasswd"
-                                                    placeholder="Confirm Password" minlength="8" maxlength="32" required>
+                                                    placeholder="Confirm Password" minlength="8" maxlength="32" ng-model="confirm" required>
                                             </div>
 
-                                            <button type="submit" class="btn btn-light w-100 mb-3">Register</button>
+                                            <button type="button" class="btn btn-light w-100 mb-3" ng-click="register()">Register</button>
 
                                             <button type="reset" class="btn btn-danger w-100">Reset</button>
                                         </div>
@@ -68,21 +68,21 @@
                                             <div class="form-group">
                                                 <label for="name">Name</label>
                                                 <input type="text" class="form-control" name="name" id="name"
-                                                    aria-describedby="helpId" placeholder="Name" required>
+                                                    aria-describedby="helpId" placeholder="Name" ng-model="name" required>
                                                 <small id="helpId" class="form-text text-muted">Your name here.</small>
                                             </div>
 
                                             <div class="form-group">
                                                 <label for="phone">Phone Number</label>
                                                 <input type="text" class="form-control" name="phone" id="phone"
-                                                    aria-describedby="helpId" placeholder="Phone Number" pattern="^\d{5,15}$" required>
+                                                    aria-describedby="helpId" placeholder="Phone Number" pattern="^\d{5,15}$" ng-model="phoneNumber" required>
                                                 <small id="helpId" class="form-text text-muted">Phone number
                                                     here.</small>
                                             </div>
 
                                             <div class="form-group">
                                               <label for="address">Address</label>
-                                              <textarea class="form-control" name="address" id="address" rows="3" required></textarea>
+                                              <textarea class="form-control" name="address" id="address" rows="3" ng-model="address" required></textarea>
                                             </div>
                                         </div>
                                     </div>
@@ -97,6 +97,22 @@
 
     <!-- angular js -->
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+
+    <script>
+        var app = angular.module("app", []);
+        app.controller("controller", ($scope, $http) => {
+            $scope.register = () => {
+                if ($scope.password == $scope.confirm){
+                    $http.post(`api/dealer.php?dealerID=${$scope.dealerID}&name=${$scope.name}&password=${$scope.password}&phoneNumber=${$scope.phoneNumber}&address=${$scope.address}`).then(
+                        function (response)
+                        {
+                            document.forms.form.submit();
+                        }
+                    );
+                }
+            }
+        });
+    </script>
 </body>
 
 </html>

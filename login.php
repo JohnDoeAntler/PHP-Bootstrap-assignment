@@ -15,11 +15,7 @@
 			$row = $admin->fetch_assoc();
 
 			$_SESSION['username'] = $username;
-			$_SESSION['password'] = $password;
-			
-			$_SESSION['email'] = $username;
-			$_SESSION['firstName'] = $row['firstName'];
-			$_SESSION['lastName'] = $row['lastName'];
+
 			$_SESSION['role'] = "admin";
 		} 
 		else
@@ -31,12 +27,7 @@
 				$row = $dealer->fetch_assoc();
 	
 				$_SESSION['username'] = $username;
-				$_SESSION['password'] = $password;
 
-				$_SESSION['dealerID'] = $username;
-				$_SESSION['name'] = $row['name'];
-				$_SESSION['phoneNumber'] = $row['phoneNumber'];
-				$_SESSION['address'] = $row['address'];
 				$_SESSION['role'] = "dealer";
 			}
 		}
@@ -45,7 +36,7 @@
 
 		if (isset($_SESSION['role']))
 		{
-			header("location: profile_a.html");
+			header("location: profile.php");
 		}
 		else
 		{

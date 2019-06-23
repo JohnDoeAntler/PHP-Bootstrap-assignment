@@ -25,7 +25,7 @@
             ?>
 
             <li class="nav-item active">
-                <a class="nav-link" href="addpart.html">Add part<span class="sr-only">(current)</span></a>
+                <a class="nav-link" href="addpart.php">Add part<span class="sr-only">(current)</span></a>
             </li>
 
             <?php 
@@ -56,7 +56,7 @@
                     aria-expanded="false">Hello, <?php echo $_SESSION['username'] ?></a>
 
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownId">
-                    <a class="dropdown-item" href="profile_a.html">View profile</a>
+                    <a class="dropdown-item" href="profile.php">View profile</a>
                     <a class="dropdown-item" href="signout.php">Sign out</a>
                 </div>
             </span>

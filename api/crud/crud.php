@@ -60,6 +60,10 @@
 		
 		while ($row = mysqli_fetch_assoc($result))
 		{
+			if (isset($row["password"]))
+			{
+				unset($row["password"]);
+			}
 			$rows[] = $row;
 		}
 

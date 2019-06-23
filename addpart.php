@@ -1,9 +1,7 @@
 <?php
 	session_start();
 	if (!isset($_SESSION["role"])){
-		header("location: login.php");
-	}else if (!isset($_POST["partNumber"])){
-		header("location: viewparts.php");
+		header("location: login.html");
 	}else if ($_SESSION["role"] != "admin"){
 		header("location: profile.php");
 	}
@@ -37,28 +35,28 @@
 	<div class="container my-5">
 		<div class="row">
 			<div class="col">
-				<h1 class="display-3">Edit Part</h1>
+				<h1 class="display-3">Add Part</h1>
 
 				<form>
 					<div class="form-group">
 					  <label for="name">Product Name</label>
-					  <input type="text" class="form-control" name="name" id="name" aria-describedby="helpId" placeholder="Name" ng-model="partName">
+					  <input type="text" class="form-control" name="name" id="name" aria-describedby="helpId" placeholder="Name" ng-model="partName" required>
 					  <small id="helpId" class="form-text text-muted">Enter your product name here.</small>
 					</div>
 
 					<div class="form-group">
 					  <label for="price">Price</label>
-					  <input type="text" class="form-control" name="price" id="price" aria-describedby="helpId" placeholder="Price" ng-model="stockPrice">
+					  <input type="text" class="form-control" name="price" id="price" aria-describedby="helpId" placeholder="Price" ng-model="stockPrice" required>
 					  <small id="helpId" class="form-text text-muted">Enter the price here.</small>
 					</div>
 
 					<div class="form-group">
 					  <label for="quantity">Quantity</label>
-					  <input type="number" class="form-control" name="quantity" id="quantity" aria-describedby="helpId" placeholder="Quantity" ng-model="stockQuantity">
+					  <input type="number" class="form-control" name="quantity" id="quantity" aria-describedby="helpId" placeholder="Quantity" ng-model="stockQuantity" required>
 					  <small id="helpId" class="form-text text-muted">Enter the quantity here.</small>
 					</div>
 
-					<button type="button" class="btn btn-light" data-toggle="modal" data-target="#editmodal">Edit part</button>
+					<button type="button" class="btn btn-light" data-toggle="modal" data-target="#editmodal">Add part</button>
 				</form>
 			</div>
 		</div>
@@ -75,11 +73,11 @@
 						</button>
 				</div>
 				<div class="modal-body">
-					Are you confirm the changes?
+					Are you confirm to add part?
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-					<button type="button" class="btn btn-primary" ng-click="edit()" data-dismiss="modal">Save Changes</button>
+					<button type="button" class="btn btn-primary" ng-click="add()" data-dismiss="modal">Add Part</button>
 				</div>
 			</div>
 		</div>
@@ -91,19 +89,8 @@
 	<script>
 		var app = angular.module("app", []);
 		app.controller("controller", ($scope, $http) => {
-
-			$http.get("api/part.php?partNumber=<?php echo $_POST["partNumber"] ?>").then(
-				function (response)
-				{
-					$scope.partNumber = response.data[0].partNumber;
-					$scope.partName = response.data[0].partName;
-					$scope.stockPrice = response.data[0].stockPrice;
-					$scope.stockQuantity = parseInt(response.data[0].stockQuantity);								
-				}
-			);
-
-			$scope.edit = () => {
-				$http.put(`api/part.php?partNumber=${$scope.partNumber}&partName=${$scope.partName}&stockQuantity=${$scope.stockQuantity}&stockPrice=${$scope.stockPrice}&email=<?php echo $_SESSION["username"]?>`).then(
+			$scope.add = () => {
+				$http.post(`api/part.php?partName=${$scope.partName}&stockQuantity=${$scope.stockQuantity}&stockPrice=${$scope.stockPrice}&stockStatus=1&email=<?php echo $_SESSION["username"]?>`).then(
 					function (response)
 					{
 						console.log(response);
