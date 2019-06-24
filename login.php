@@ -15,7 +15,7 @@
 			$row = $admin->fetch_assoc();
 
 			$_SESSION['username'] = $username;
-
+			$_SESSION['password'] = $password;
 			$_SESSION['role'] = "admin";
 		} 
 		else
@@ -27,7 +27,7 @@
 				$row = $dealer->fetch_assoc();
 	
 				$_SESSION['username'] = $username;
-
+				$_SESSION['password'] = $password;
 				$_SESSION['role'] = "dealer";
 			}
 		}

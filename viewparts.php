@@ -42,10 +42,10 @@
 				<table class="table">
 					<thead>
 						<tr>
+							<th>Part Number</th>
 							<th>Product Name</th>
 							<th>Price</th>
 							<th>Remaining Stock</th>
-							<th>Status</th>
 
 							<?php 
 								if ($_SESSION['role'] == "admin"){
@@ -57,10 +57,10 @@
 					</thead>
 					<tbody>
 						<tr ng-repeat="part in parts">
-							<td scope="row">{{part.partName}}</td>
+							<td scope="row">{{part.partNumber}}</td>
+							<td>{{part.partName}}</td>
 							<td>{{part.stockPrice}}</td>
 							<td>{{part.stockQuantity}}</td>
-							<td>{{part.stockStatus == 1 ? "Available" : "Unavailable"}}</td>
 
 							<?php 
 								if ($_SESSION['role'] == "admin"){

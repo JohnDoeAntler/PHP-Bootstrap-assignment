@@ -102,13 +102,15 @@
         var app = angular.module("app", []);
         app.controller("controller", ($scope, $http) => {
             $scope.register = () => {
-                if ($scope.password == $scope.confirm){
-                    $http.post(`api/dealer.php?dealerID=${$scope.dealerID}&name=${$scope.name}&password=${$scope.password}&phoneNumber=${$scope.phoneNumber}&address=${$scope.address}`).then(
-                        function (response)
-                        {
-                            document.forms.form.submit();
-                        }
-                    );
+                if (document.forms.form.reportValidity()){
+                    if ($scope.password == $scope.confirm){
+                        $http.post(`api/dealer.php?dealerID=${$scope.dealerID}&name=${$scope.name}&password=${$scope.password}&phoneNumber=${$scope.phoneNumber}&address=${$scope.address}`).then(
+                            function (response)
+                            {
+                                document.forms.form.submit();
+                            }
+                        );
+                    }
                 }
             }
         });

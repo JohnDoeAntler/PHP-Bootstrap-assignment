@@ -1,7 +1,7 @@
 <?php
 	session_start();
 	if (!isset($_SESSION["role"])){
-		header("location: login.php");
+		header("location: login.html");
 	}else if (!isset($_POST["partNumber"])){
 		header("location: viewparts.php");
 	}else if ($_SESSION["role"] != "admin"){
@@ -39,7 +39,7 @@
 			<div class="col">
 				<h1 class="display-3">Edit Part</h1>
 
-				<form>
+				<form name="form">
 					<div class="form-group">
 					  <label for="name">Product Name</label>
 					  <input type="text" class="form-control" name="name" id="name" aria-describedby="helpId" placeholder="Name" ng-model="partName">
@@ -103,12 +103,15 @@
 			);
 
 			$scope.edit = () => {
-				$http.put(`api/part.php?partNumber=${$scope.partNumber}&partName=${$scope.partName}&stockQuantity=${$scope.stockQuantity}&stockPrice=${$scope.stockPrice}&email=<?php echo $_SESSION["username"]?>`).then(
-					function (response)
-					{
-						console.log(response);
-					}
-				);
+				if (document.forms.form.reportValidity())
+				{
+					$http.put(`api/part.php?partNumber=${$scope.partNumber}&partName=${$scope.partName}&stockQuantity=${$scope.stockQuantity}&stockPrice=${$scope.stockPrice}&email=<?php echo $_SESSION["username"]?>`).then(
+						function (response)
+						{
+							console.log(response);
+						}
+					);
+				}
 			}
 		});
 	</script>

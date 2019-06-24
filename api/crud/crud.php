@@ -1,5 +1,4 @@
 <?php
-
 	function create($table, $args=null)
 	{
 		require_once("../connection.php");

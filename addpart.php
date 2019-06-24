@@ -37,7 +37,7 @@
 			<div class="col">
 				<h1 class="display-3">Add Part</h1>
 
-				<form>
+				<form name="form">
 					<div class="form-group">
 					  <label for="name">Product Name</label>
 					  <input type="text" class="form-control" name="name" id="name" aria-describedby="helpId" placeholder="Name" ng-model="partName" required>
@@ -90,12 +90,15 @@
 		var app = angular.module("app", []);
 		app.controller("controller", ($scope, $http) => {
 			$scope.add = () => {
-				$http.post(`api/part.php?partName=${$scope.partName}&stockQuantity=${$scope.stockQuantity}&stockPrice=${$scope.stockPrice}&stockStatus=1&email=<?php echo $_SESSION["username"]?>`).then(
-					function (response)
-					{
-						console.log(response);
-					}
-				);
+				if (document.forms.form.reportValidity())
+				{
+					$http.post(`api/part.php?partName=${$scope.partName}&stockQuantity=${$scope.stockQuantity}&stockPrice=${$scope.stockPrice}&stockStatus=1&email=<?php echo $_SESSION["username"]?>`).then(
+						function (response)
+						{
+							console.log(response);
+						}
+					);
+				}
 			}
 		});
 	</script>
