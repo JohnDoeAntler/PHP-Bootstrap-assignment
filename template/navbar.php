@@ -14,7 +14,7 @@
 
         <ul class="navbar-nav mt-2 mt-lg-0">
             <li class="nav-item active">
-                <a class="nav-link" href="vieworders_a.html">View orders<span class="sr-only">(current)</span></a>
+                <a class="nav-link" href="vieworders.php">View orders<span class="sr-only">(current)</span></a>
             </li>
             <li class="nav-item active">
                 <a class="nav-link" href="viewparts.php">View parts<span class="sr-only">(current)</span></a>
@@ -33,7 +33,7 @@
             ?>
 
             <li class="nav-item active">
-                <a class="nav-link" href="placeorder.html">Place order<span class="sr-only">(current)</span></a>
+                <a class="nav-link" href="placeorder.php">Place order<span class="sr-only">(current)</span></a>
             </li>
 
             <?php 

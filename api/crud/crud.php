@@ -21,9 +21,7 @@
 			$value = implode(", ", $values);
 		}
 
-		$result = $conn->query("INSERT INTO $table ($header) VALUES ($value);");
-
-		print ($conn->affected_rows > 0 ? "true" : "false");
+		print ($conn->query("INSERT INTO `$table` ($header) VALUES ($value);") ? "true" : "false");
 
 		$conn->close();
 	}
@@ -53,7 +51,7 @@
 			}
 		}
 
-		$result = $conn->query("SELECT * FROM $table $str;");
+		$result = $conn->query("SELECT * FROM `$table` $str;");
 
 		$rows = array();
 		
@@ -73,6 +71,8 @@
 
 	function update($table, $args=null)
 	{
+		session_start();
+
 		require_once("../connection.php");
 
 		$modifications = "";
@@ -97,13 +97,17 @@
 					$modifications .= ", $key = '$val'";
 				}
 
+				// update session password.
+				if ($key == "password")
+				{
+					$_SESSION['password'] = $val;
+				}
+
 				$index++;
 			}
 		}
 
-		$result = $conn->query("UPDATE $table SET $modifications WHERE $condition;");
-
-		print ($conn->affected_rows > 0 ? "true" : "false");
+		print ($conn->query("UPDATE `$table` SET $modifications WHERE $condition") ? "true" : "false");
 
 		$conn->close();
 	}

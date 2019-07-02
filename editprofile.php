@@ -162,7 +162,7 @@
                                 (response) => 
                                 {
                                     if (response.data == "true"){
-                                        var str = !!!$scope.newPassword ? `&password=${$scope.newPassword}` : "";
+                                        var str = !!$scope.newPassword ? `&password=${$scope.newPassword}` : "";
 
                                         $http.put(`api/administrator.php?email=${$scope.email}${str}&firstName=${$scope.firstName}&lastName=${$scope.lastName}`).then(
                                             (response) => 
@@ -194,8 +194,8 @@
                                 (response) => 
                                 {
                                     if (response.data == "true"){
-                                        var str = !!!$scope.newPassword ? `&password=${$scope.newPassword}` : "";
-
+                                        var str = !!$scope.newPassword ? `&password=${$scope.newPassword}` : "";
+                                        
                                         $http.put(`api/dealer.php?dealerID=${$scope.dealerID}${str}&name=${$scope.name}&phoneNumber=${$scope.phoneNumber}&address=${$scope.address}`).then(
                                             (response) => 
                                             {

@@ -1,6 +1,13 @@
+<?php
+	session_start();
+	if (!isset($_SESSION["role"])){
+		header("location: login.html");
+	}else if ($_SESSION["role"] != "dealer"){
+		header("location: profile.php");
+	}
+?>
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -31,13 +38,14 @@
             <div class="col">
                 <h1 class="display-3">Place Order</h1>
 
-                <form>
+                <form name="form">
                     <table id="orderpart" class="table">
                         <caption>Ordered Items</caption>
                         <thead>
                             <tr>
                                 <th>Product Name</th>
                                 <th>Quantity</th>
+                                <th>Price</th>
                                 <th style="width: 100px">Action</th>
                             </tr>
                         </thead>
@@ -45,11 +53,10 @@
                             <tr ng-repeat="orderpart in orderparts">
                                 <td scope="row">{{orderpart.product.partName}}</td>
                                 <td>{{orderpart.quantity}}</td>
+                                <td>{{orderpart.product.stockPrice * orderpart.quantity | currency}}</td>
                                 <td>
                                     <button type="button" class="btn btn-light" ng-click="removerow($index)">Remove</button>
                                 </td>
-
-                                <input type="hidden" name="orderpart[]" value="{{orderpart}}">
                             </tr>
                         </tbody>
                     </table>
@@ -73,16 +80,37 @@
                     <div class="form-group my-5">
                         <label for="address">Delivery Address</label>
                         <input type="text" class="form-control" name="address" id="address" aria-describedby="helpId"
-                            placeholder="Delivery Address" required>
+                            placeholder="Delivery Address" ng-model="address" required>
                         <small id="helpId" class="form-text text-muted">Enter the delivery address here.</small>
                     </div>
     
                     <p>
-                        Total price: ${{total()}}
+                        Total price: {{total() | currency}}
                     </p>
     
-                    <button type="submit" class="btn btn-light mb-5">Place order</button>
+                    <button type="button" class="btn btn-light mb-5" data-toggle="modal" data-target="#modelId">Place order</button>
                 </form>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal -->
+    <div class="modal fade" id="modelId" tabindex="-1" role="dialog" aria-labelledby="modelTitleId" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Confirmation</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                </div>
+                <div class="modal-body">
+                    Are you sure to place an order?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" ng-click="submit()" data-dismiss="modal">Place Order</button>
+                </div>
             </div>
         </div>
     </div>
@@ -93,31 +121,26 @@
     <script>
         var app = angular.module('app', []);
 
-        app.controller('controller', function ($scope) 
+        app.controller('controller', ($scope, $http) => 
         {
-            $scope.parts = 
-            [
-                {
-                    partName: "Whatever",
-                    stockPrice: 8.5
-                },
-                {
-                    partName: "Toilet",
-                    stockPrice: 5
-                }
-            ];
+            $scope.parts = [];
+
+            $http.get("api/part.php?stockStatus=1").then(response =>
+            {
+                $scope.parts = response.data;
+            });
 
             $scope.orderparts = [];
 
             $scope.addrow = () => {
-                if ($scope.product != null && $scope.quantity != null)
+                if ($scope.product != null && $scope.quantity != null && $scope.quantity > 0)
                 {
                     if (!$scope.orderparts.some(x => x.product == $scope.parts.filter(x => $scope.product == x.partName)[0]))
                     {
                         $scope.orderparts.push(
                             {
                                 product: $scope.parts.filter(x => $scope.product == x.partName)[0],
-                                quantity: $scope.quantity
+                                quantity: $scope.quantity,
                             }
                         );
                     }
@@ -128,9 +151,33 @@
                 $scope.orderparts.splice($index, 1);
             }
 
-            $scope.total = () =>
+            $scope.total = () => $scope.orderparts.map(x => x.product.stockPrice * x.quantity).reduce((a, b) => a + b, 0);
+
+            $scope.submit = () =>
             {
-                return $scope.orderparts.map(x => x.product.stockPrice * x.quantity).reduce((a, b) => a + b, 0);
+                if (document.forms.form.reportValidity()){                    
+                    // if orderpart count > 0
+                    if ($scope.orderparts.length > 0){
+                        // 0. “In processing”: The order was made
+                        // 1. “Delivery”: The parts are delivering to the dealer
+                        // 2. “Completed”: The dealer received the parts ordered
+                        // 3. “Canceled”: The order is canceled by administrator
+
+                        $http.post(`api/order.php?dealerID=<?php echo $_SESSION['username'] ?>&deliveryAddress=${$scope.address}&status=0`).then((response) =>
+                        {                    
+                            $http.get(`api/order.php?dealerID=<?php echo $_SESSION['username'] ?>`).then(response =>
+                            {
+                                let orderID = Math.max(...response.data.map(x => x.orderID));
+
+                                $scope.orderparts.forEach(orderpart => {
+                                    $http.post(`api/orderpart.php?orderID=${orderID}&partNumber=${orderpart.product.partNumber}&quantity=${orderpart.quantity}`);
+                                });
+
+                                window.location.assign(`vieworder.php?orderID=${orderID}`);
+                            })
+                        });
+                    }
+                }
             }
         });
     </script>

@@ -39,7 +39,7 @@
 			<div class="col-12">
 				<h1 class="display-3">Part List</h1>
 
-				<table class="table">
+				<table class="table table-striped">
 					<thead>
 						<tr>
 							<th>Part Number</th>
@@ -57,9 +57,9 @@
 					</thead>
 					<tbody>
 						<tr ng-repeat="part in parts">
-							<td scope="row">{{part.partNumber}}</td>
+							<th scope="row">{{part.partNumber}}</th>
 							<td>{{part.partName}}</td>
-							<td>{{part.stockPrice}}</td>
+							<td>{{part.stockPrice | currency}}</td>
 							<td>{{part.stockQuantity}}</td>
 
 							<?php 
