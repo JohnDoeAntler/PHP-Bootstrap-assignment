@@ -88,7 +88,7 @@
                         Total price: {{total() | currency}}
                     </p>
     
-                    <button type="button" class="btn btn-light mb-5" data-toggle="modal" data-target="#modelId">Place order</button>
+                    <button type="button" class="btn btn-light mb-5" data-toggle="modal" data-target="#modelId">Place Order</button>
                 </form>
             </div>
         </div>
@@ -176,6 +176,8 @@
                                 window.location.assign(`vieworder.php?orderID=${orderID}`);
                             })
                         });
+                    }else {
+                        alert("No any single ordered parts has been found.");
                     }
                 }
             }

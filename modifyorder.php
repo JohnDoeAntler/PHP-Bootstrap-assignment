@@ -1,3 +1,11 @@
+<?php
+	session_start();
+	if (!isset($_SESSION["role"])){
+		header("location: login.html");
+	}else if (!isset($_GET["orderID"]) || $_SESSION["role"] == "admin"){
+		header("location: vieworders.php");
+	}
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -31,13 +39,14 @@
             <div class="col">
                 <h1 class="display-3">Modify Order</h1>
 
-                <form>
+                <form name="form">
                     <table id="orderpart" class="table">
                         <caption>Ordered Items</caption>
                         <thead>
                             <tr>
                                 <th>Product Name</th>
                                 <th>Quantity</th>
+                                <th>Total Price</th>
                                 <th style="width: 100px">Action</th>
                             </tr>
                         </thead>
@@ -45,11 +54,10 @@
                             <tr ng-repeat="orderpart in orderparts">
                                 <td scope="row">{{orderpart.product.partName}}</td>
                                 <td>{{orderpart.quantity}}</td>
+                                <td>{{orderpart.quantity * orderpart.product.stockPrice | currency}}</td>
                                 <td>
                                     <button type="button" class="btn btn-light" ng-click="removerow($index)">Remove</button>
                                 </td>
-
-                                <input type="hidden" name="orderpart[]" value="{{orderpart}}">
                             </tr>
                         </tbody>
                     </table>
@@ -73,15 +81,15 @@
                     <div class="form-group my-5">
                         <label for="address">Delivery Address</label>
                         <input type="text" class="form-control" name="address" id="address" aria-describedby="helpId"
-                            placeholder="Delivery Address">
+                            placeholder="Delivery Address" ng-model="address">
                         <small id="helpId" class="form-text text-muted">Enter the delivery address here.</small>
                     </div>
     
                     <p>
-                        Total price: ${{total()}}
+                        Total price: {{total() | currency}}
                     </p>
     
-                    <button type="submit" class="btn btn-light mb-5">Place order</button>
+                    <button type="button" class="btn btn-light mb-5" ng-click="submit()">Modify Order</button>
                 </form>
             </div>
         </div>
@@ -93,31 +101,30 @@
     <script>
         var app = angular.module('app', []);
 
-        app.controller('controller', function ($scope) 
+        app.controller('controller', function ($scope, $http) 
         {
-            $scope.parts = 
-            [
-                {
-                    partName: "Whatever",
-                    stockPrice: 8.5
-                },
-                {
-                    partName: "Toilet",
-                    stockPrice: 5
-                }
-            ];
+			$http.get("api/part.php").then(response =>
+			{
+                $scope.parts = response.data;                
 
-            $scope.orderparts = 
-            [
-                {
-                    product: $scope.parts[0],
-                    quantity : 4
-                },
-                {
-                    product: $scope.parts[1],
-                    quantity : 5
-                }
-            ];
+				$http.get("api/orderpart.php?orderID=<?php echo $_GET['orderID'] ?>").then(response =>
+				{
+                    $scope.orderparts = response.data.map(function(orderpart)
+                    {
+						return {
+							product: $scope.parts.filter(x => x.partNumber === orderpart.partNumber)[0],
+							quantity: orderpart.quantity
+						};
+                    });
+				});
+			});
+
+			$http.get("api/order.php?orderID=<?php echo $_GET['orderID'] ?>").then(response =>
+			{
+				let order = response.data[0];
+
+				$scope.address = order.deliveryAddress;	
+			});
 
             $scope.addrow = () => {
                 if ($scope.product != null && $scope.quantity != null)
@@ -138,9 +145,33 @@
                 $scope.orderparts.splice($index, 1);
             }
 
-            $scope.total = () =>
+            $scope.total = () => $scope.orderparts.map(x => x.product.stockPrice * x.quantity).reduce((a, b) => a + b, 0);
+
+            $scope.submit = () => 
             {
-                return $scope.orderparts.map(x => x.product.stockPrice * x.quantity).reduce((a, b) => a + b, 0);
+                if (document.forms.form.reportValidity()){                    
+                    // if orderpart count > 0
+                    if ($scope.orderparts.length > 0){
+                        // 0. “In processing”: The order was made
+                        // 1. “Delivery”: The parts are delivering to the dealer
+                        // 2. “Completed”: The dealer received the parts ordered
+                        // 3. “Canceled”: The order is canceled by administrator
+
+                        $http.put(`api/order.php?orderID=<?php echo $_GET["orderID"] ?>&deliveryAddress=${$scope.address}`).then((response) =>
+                        {
+                            $http.delete(`api/orderpart.php?orderID=<?php echo $_GET["orderID"] ?>`);
+
+                            $scope.orderparts.forEach(orderpart => 
+                            {
+                                $http.post(`api/orderpart.php?orderID=<?php echo $_GET["orderID"] ?>&partNumber=${orderpart.product.partNumber}&quantity=${orderpart.quantity}`).then(response =>{
+                                    window.location.assign(`vieworder.php?orderID=${orderID}`);
+                                });
+                            });
+                        });
+                    }else {
+                        alert("No any single ordered parts has been found.");
+                    }
+                }
             }
         });
     </script>

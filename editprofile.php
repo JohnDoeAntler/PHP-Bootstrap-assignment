@@ -170,9 +170,13 @@
                                                 window.location.href = "profile.php";
                                             }
                                         );
+                                    }else {
+                                        alert("Invalid password.");
                                     }
                                 }
                             );
+                        }else {
+                            alert("Password text field and confirm text field does not match.");
                         }
                     }
                 }
@@ -202,9 +206,13 @@
                                                 window.location.href = "profile.php";
                                             }
                                         );
+                                    }else {
+                                        alert("Invalid password.");
                                     }
                                 }
                             );
+                        }else {
+                            alert("Password text field and confirm text field does not match.");
                         }
                     }
                 }

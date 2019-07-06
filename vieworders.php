@@ -71,28 +71,34 @@
 
                             <td>{{order.orderDate}}</td>
                             <td>{{order.deliveryAddress}}</td>
-                            <td>{{order.status}}</td>
-                            <td>{{order.totalPrice}}</td>
+                            <td ng-switch on="order.status">
+                                <p ng-switch-when="0">In-processing</p>
+                                <p ng-switch-when="1">Delivery</p>
+                                <p ng-switch-when="2">Completed</p>
+                                <p ng-switch-when="3">Cancelled</p>
+                            </td>
+                            <td>{{order.totalPrice | currency}}</td>
                             <td>
                                 <button type="button" class="btn btn-light" data-toggle="modal"
-                                    data-target="#viewmodal">View</button>
+                                    data-target="#viewmodal" ng-click="selectedOrder(order.orderID)">View</button>
 				
 								<?php if ($_SESSION["role"] == "admin") { ?>
 
                                 <button type="button" class="btn btn-light" data-toggle="modal"
-                                    data-target="#delivermodal">Deliver</button>
+                                    data-target="#delivermodal" ng-click="selectedOrder(order.orderID)">Deliver</button>
 		
 								<?php } else { ?>
 
                                 <button type="button" class="btn btn-light" data-toggle="modal"
-                                    data-target="#modifymodal">Modify</button>
+                                    data-target="#modifymodal" ng-click="selectedOrder(order.orderID)">Modify</button>
+
                                 <button type="button" class="btn btn-light" data-toggle="modal"
-									data-target="#completemodal">Complete</button>
+									data-target="#completemodal" ng-click="selectedOrder(order.orderID)">Complete</button>
 									
 								<?php } ?>
 
                                 <button type="button" class="btn btn-light" data-toggle="modal"
-                                    data-target="#cancelmodal">Cancel</button>
+                                    data-target="#cancelmodal" ng-click="selectedOrder(order.orderID)">Cancel</button>
                             </td>
                         </tr>
                     </tbody>
@@ -117,7 +123,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <a href="vieworder.php">
+                    <a ng-href="vieworder.php?orderID={{selectedOrderID}}">
                         <button type="button" class="btn btn-primary">View</button>
                     </a>
                 </div>
@@ -143,7 +149,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary">Deliver</button>
+                    <button type="button" class="btn btn-primary" ng-click="deliver()" data-dismiss="modal">Deliver</button>
                 </div>
             </div>
         </div>
@@ -169,7 +175,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <a href="modifyorder.php">
+                    <a href="modifyorder.php?orderID={{selectedOrderID}}">
                         <button type="button" class="btn btn-primary">Modify</button>
                     </a>
                 </div>
@@ -193,7 +199,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary">Complete</button>
+                    <button type="button" class="btn btn-primary" ng-click="complete()" data-dismiss="modal">Complete</button>
                 </div>
             </div>
         </div>
@@ -217,7 +223,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary">Cancel</button>
+                    <button type="button" class="btn btn-primary" ng-click="cancel()" data-dismiss="modal">Cancel</button>
                 </div>
             </div>
         </div>
@@ -231,7 +237,24 @@
 
 		app.controller("controller", ($scope, $http) =>
 		{			
-			$http.get("api/orders.php").then(response => $scope.orders = response.data);
+            $http.get("api/orders.php").then(response => $scope.orders = response.data);
+
+            $scope.selectedOrder = (orderID) => $scope.selectedOrderID = orderID;
+
+			$scope.deliver = () => {
+                $http.put(`api/order.php?orderID=${$scope.selectedOrderID}&status=1`);
+                $scope.orders.filter(x => x.orderID == $scope.selectedOrderID)[0].status = 1;
+			}
+
+            $scope.complete = () => {
+                $http.put(`api/order.php?orderID=${$scope.selectedOrderID}&status=2`);
+                $scope.orders.filter(x => x.orderID == $scope.selectedOrderID)[0].status = 2;
+            }
+
+            $scope.cancel = () => {
+                $http.put(`api/order.php?orderID=${$scope.selectedOrderID}&status=3`);
+                $scope.orders.filter(x => x.orderID == $scope.selectedOrderID)[0].status = 3;
+            }
 		});
 	</script>
 </body>

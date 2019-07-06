@@ -95,7 +95,7 @@
 					$http.post(`api/part.php?partName=${$scope.partName}&stockQuantity=${$scope.stockQuantity}&stockPrice=${$scope.stockPrice}&stockStatus=1&email=<?php echo $_SESSION["username"]?>`).then(
 						function (response)
 						{
-							console.log(response);
+							window.location.assign(`viewparts.php`);
 						}
 					);
 				}

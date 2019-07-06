@@ -40,7 +40,7 @@
 		}
 		else
 		{
-			die("on9");
+			header("location: login.html");
 		}
 	}
 ?>

@@ -14,5 +14,8 @@
 		case 'GET':
 			read("OrderPart", $_REQUEST);
 			break;
+		case 'DELETE':
+			delete("OrderPart", $_REQUEST);
+			break;
 	}
 ?>

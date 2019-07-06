@@ -111,4 +111,33 @@
 
 		$conn->close();
 	}
+
+	function delete($table, $args=null)
+	{
+		session_start();
+
+		require_once("../connection.php");
+
+		$condition = "";
+
+		if (isset($args))
+		{
+			$index = 0;
+			foreach ($args as $key => $val)
+			{
+				if ($index == 0)
+				{
+					$condition .= " WHERE $key = '$val'";
+				}else
+				 {
+					$condition .= " AND $key = '$val'";
+				}
+				$index++;
+			}
+
+			print ($conn->query("DELETE FROM `$table`$condition") ? "true" : "false");
+		}
+
+		$conn->close();
+	}
 ?>
