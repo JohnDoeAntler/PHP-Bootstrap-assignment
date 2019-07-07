@@ -29,6 +29,9 @@
 
 	<!-- Default CSS file -->
 	<link rel="stylesheet" href="css/default.css">
+
+	<!-- custom font -->
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
 </head>
 
 <body ng-app="app" ng-controller="controller">
@@ -42,21 +45,48 @@
 				<table class="table table-striped">
 					<thead>
 						<tr>
-							<th>Part Number</th>
-							<th>Product Name</th>
-							<th>Price</th>
-							<th>Remaining Stock</th>
+							<th ng-click="sortData('partNumber')" style="cursor: pointer;">
+								Part Number
+                                <i class="fas fa-angle-up ml-3" ng-if="sortColumn == 'partNumber' && reverseSort"></i>
+                                <i class="fas fa-angle-down ml-3" ng-if="sortColumn == 'partNumber' && !reverseSort"></i>
+							</th>
+
+							<th ng-click="sortData('partName')" style="cursor: pointer;">
+								Product Name
+                                <i class="fas fa-angle-up ml-3" ng-if="sortColumn == 'partName' && reverseSort"></i>
+                                <i class="fas fa-angle-down ml-3" ng-if="sortColumn == 'partName' && !reverseSort"></i>
+							</th>
+
+							<th ng-click="sortData('stockPrice')" style="cursor: pointer;">
+								Price
+                                <i class="fas fa-angle-up ml-3" ng-if="sortColumn == 'stockPrice' && reverseSort"></i>
+                                <i class="fas fa-angle-down ml-3" ng-if="sortColumn == 'stockPrice' && !reverseSort"></i>
+							</th>
+
+							<th ng-click="sortData('stockQuantity')" style="cursor: pointer;">
+								Remaining Stock
+                                <i class="fas fa-angle-up ml-3" ng-if="sortColumn == 'stockQuantity' && reverseSort"></i>
+                                <i class="fas fa-angle-down ml-3" ng-if="sortColumn == 'stockQuantity' && !reverseSort"></i>
+							</th>
 
 							<?php 
 								if ($_SESSION['role'] == "admin"){
 							?>
-							<th>Last Modifier</th>
-							<th style="width: 190px">Action</th>
+							<th ng-click="sortData('email')" style="cursor: pointer;">
+								Last Modifier
+                                <i class="fas fa-angle-up ml-3" ng-if="sortColumn == 'email' && reverseSort"></i>
+                                <i class="fas fa-angle-down ml-3" ng-if="sortColumn == 'email' && !reverseSort"></i>
+							</th>
+
+							<th style="width: 190px;">
+								Action
+							</th>
+
 							<?php } ?>
 						</tr>
 					</thead>
 					<tbody>
-						<tr ng-repeat="part in parts">
+						<tr ng-repeat="part in parts | orderBy:sortColumn:reverseSort">
 							<th scope="row">{{part.partNumber}}</th>
 							<td>{{part.partName}}</td>
 							<td>{{part.stockPrice | currency}}</td>
@@ -140,7 +170,7 @@
 
 			$http.get("api/part.php?stockStatus=1").then(
 				function (response)
-				{
+				{					
 					response.data.forEach(x => {
 						$scope.parts.push(x);
 					});					
@@ -154,6 +184,16 @@
 			$scope.remove = () => {
 				$scope.parts = $scope.parts.filter(x => x.partNumber != $scope.selectedPartNumber);
 				$http.put(`api/part.php?partNumber=${$scope.selectedPartNumber}&stockStatus=0`);
+			}
+
+			// sorting
+
+			$scope.sortColumn = "partNumber";
+			$scope.reverseSort = false;
+
+			$scope.sortData = function (column) {
+				$scope.reverseSort = ($scope.sortColumn == column) ? !$scope.reverseSort : false;
+				$scope.sortColumn = column;
 			}
 		});
 	</script>

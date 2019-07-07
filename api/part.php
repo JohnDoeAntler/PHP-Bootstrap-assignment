@@ -6,13 +6,13 @@
 	switch ($method) 
 	{
 		case 'PUT':
-			update("Part", $_REQUEST);
+			update("part", $_REQUEST);
 			break;
 		case 'POST':
-			create("Part", $_REQUEST);
+			create("part", $_REQUEST);
 			break;
 		case 'GET':
-			read("Part", $_REQUEST);
+			read("part", $_REQUEST);
 			break;
 	}
 ?>

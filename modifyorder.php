@@ -89,8 +89,29 @@
                         Total price: {{total() | currency}}
                     </p>
     
-                    <button type="button" class="btn btn-light mb-5" ng-click="submit()">Modify Order</button>
+                    <button type="button" class="btn btn-light mb-5"  data-toggle="modal" data-target="#modelId">Modify Order</button>
                 </form>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal -->
+    <div class="modal fade" id="modelId" tabindex="-1" role="dialog" aria-labelledby="modelTitleId" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Confirmation</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                </div>
+                <div class="modal-body">
+                    Are you confirm to save the modifications?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="submit()">Save changes</button>
+                </div>
             </div>
         </div>
     </div>
@@ -121,9 +142,14 @@
 
 			$http.get("api/order.php?orderID=<?php echo $_GET['orderID'] ?>").then(response =>
 			{
-				let order = response.data[0];
+                let order = response.data[0];
 
-				$scope.address = order.deliveryAddress;	
+                if (order.status != 0){
+                    alert("You are not permitted to modify a non-in-processing order.");
+                    window.location.assign(`vieworder.php?orderID=${order.orderID}`);
+                }else {
+                    $scope.address = order.deliveryAddress;	
+                }
 			});
 
             $scope.addrow = () => {
@@ -145,7 +171,7 @@
                 $scope.orderparts.splice($index, 1);
             }
 
-            $scope.total = () => $scope.orderparts.map(x => x.product.stockPrice * x.quantity).reduce((a, b) => a + b, 0);
+            $scope.total = () => !!!$scope.orderparts ? 0 : $scope.orderparts.map(x => x.product.stockPrice * x.quantity).reduce((a, b) => a + b, 0);
 
             $scope.submit = () => 
             {
@@ -164,7 +190,7 @@
                             $scope.orderparts.forEach(orderpart => 
                             {
                                 $http.post(`api/orderpart.php?orderID=<?php echo $_GET["orderID"] ?>&partNumber=${orderpart.product.partNumber}&quantity=${orderpart.quantity}`).then(response =>{
-                                    window.location.assign(`vieworder.php?orderID=${orderID}`);
+                                    window.location.assign(`vieworder.php?orderID=<?php echo $_GET["orderID"] ?>`);
                                 });
                             });
                         });

@@ -29,6 +29,9 @@
 
     <!-- Default CSS file -->
     <link rel="stylesheet" href="css/default.css">
+
+    <!-- custom font -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
 </head>
 
 <body ng-app="app" ng-controller="controller">
@@ -42,24 +45,57 @@
                 <table class="table table-striped">
                     <thead>
                         <tr>
-							<th>Order ID</th>
+							<th ng-click="sortData('orderID')" style="cursor: pointer;">
+                                Order ID
+                                <i class="fas fa-angle-up ml-3" ng-if="sortColumn == 'orderID' && reverseSort"></i>
+                                <i class="fas fa-angle-down ml-3" ng-if="sortColumn == 'orderID' && !reverseSort"></i>
+                            </th>
 							
 							<?php if ($_SESSION["role"] == "admin") { ?>
 
-                            <th>Dealer ID</th>
-							<th>Dealer Name</th>
+                            <th ng-click="sortData('dealerID')" style="cursor: pointer;">
+                                Dealer ID
+                                <i class="fas fa-angle-up ml-3" ng-if="sortColumn == 'dealerID' && reverseSort"></i>
+                                <i class="fas fa-angle-down ml-3" ng-if="sortColumn == 'dealerID' && !reverseSort"></i>
+                            </th>
+
+							<th ng-click="sortData('name')" style="cursor: pointer;">
+                                Dealer Name
+                                <i class="fas fa-angle-up ml-3" ng-if="sortColumn == 'name' && reverseSort"></i>
+                                <i class="fas fa-angle-down ml-3" ng-if="sortColumn == 'name' && !reverseSort"></i>
+                            </th>
 
 							<?php } ?>
 
-                            <th>Order Date</th>
-                            <th>Address</th>
-                            <th>Status</th>
-                            <th>Total Price</th>
+                            <th ng-click="sortData('orderDate')" style="cursor: pointer;">
+                                Order Date
+                                <i class="fas fa-angle-up ml-3" ng-if="sortColumn == 'orderDate' && reverseSort"></i>
+                                <i class="fas fa-angle-down ml-3" ng-if="sortColumn == 'orderDate' && !reverseSort"></i>
+                            </th>
+
+                            <th ng-click="sortData('deliveryAddress')" style="cursor: pointer;">
+                                Address
+                                <i class="fas fa-angle-up ml-3" ng-if="sortColumn == 'deliveryAddress' && reverseSort"></i>
+                                <i class="fas fa-angle-down ml-3" ng-if="sortColumn == 'deliveryAddress' && !reverseSort"></i>
+                            </th>
+
+                            <th ng-click="sortData('status')" style="cursor: pointer;">
+                                Status
+                                <i class="fas fa-angle-up ml-3" ng-if="sortColumn == 'status' && reverseSort"></i>
+                                <i class="fas fa-angle-down ml-3" ng-if="sortColumn == 'status' && !reverseSort"></i>
+                            </th>
+
+                            <th ng-click="sortData('totalPrice')" style="cursor: pointer;">
+                                Total Price
+                                <i class="fas fa-angle-up ml-3" ng-if="sortColumn == 'totalPrice' && reverseSort"></i>
+                                <i class="fas fa-angle-down ml-3" ng-if="sortColumn == 'totalPrice' && !reverseSort"></i>
+                            </th>
+
                             <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr ng-repeat="order in orders">
+                        <tr ng-repeat="order in orders | orderBy:sortColumn:reverseSort">
                             <th scope="row">{{order.orderID}}</th>
 							
 							<?php if ($_SESSION["role"] == "admin") { ?>
@@ -175,7 +211,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <a href="modifyorder.php?orderID={{selectedOrderID}}">
+                    <a ng-href="modifyorder.php?orderID={{selectedOrderID}}">
                         <button type="button" class="btn btn-primary">Modify</button>
                     </a>
                 </div>
@@ -237,23 +273,57 @@
 
 		app.controller("controller", ($scope, $http) =>
 		{			
-            $http.get("api/orders.php").then(response => $scope.orders = response.data);
+            $http.get("api/orders.php<?php if ($_SESSION["role"] == "dealer") echo "?dealerID=".$_SESSION["username"]; ?>").then(response => $scope.orders = response.data);
 
             $scope.selectedOrder = (orderID) => $scope.selectedOrderID = orderID;
 
 			$scope.deliver = () => {
-                $http.put(`api/order.php?orderID=${$scope.selectedOrderID}&status=1`);
-                $scope.orders.filter(x => x.orderID == $scope.selectedOrderID)[0].status = 1;
+                // if the order status is in pending stage.
+                if ($scope.orders.filter(x => x.orderID == $scope.selectedOrderID)[0].status == 0){
+                    // update the status to delivery
+                    $http.put(`api/order.php?orderID=${$scope.selectedOrderID}&status=1`);
+                    // real time update the ui interface
+                    $scope.orders.filter(x => x.orderID == $scope.selectedOrderID)[0].status = 1;
+
+                    // remove the stock quantity that the order purchased.
+                    $http.get(`api/orderpart.php?orderID=${$scope.selectedOrderID}`).then(response => {
+                        response.data.forEach(x => {
+                            $http.put(`api/part.php?partNumber=${x.partNumber}&stockQuantity=!stockQuantity-${x.quantity}`);
+                        });
+                    });
+                }else {
+                    alert("You are not permitted to delivery a non-in-progressing order.");
+                }
 			}
 
             $scope.complete = () => {
-                $http.put(`api/order.php?orderID=${$scope.selectedOrderID}&status=2`);
-                $scope.orders.filter(x => x.orderID == $scope.selectedOrderID)[0].status = 2;
+                // if the order status is in delivery stage.
+                if ($scope.orders.filter(x => x.orderID == $scope.selectedOrderID)[0].status == 1){
+                    $http.put(`api/order.php?orderID=${$scope.selectedOrderID}&status=2`);
+                    $scope.orders.filter(x => x.orderID == $scope.selectedOrderID)[0].status = 2;
+                } else {
+                    alert("You are not permitted to complete a non-delivery order.");
+                }
             }
 
             $scope.cancel = () => {
-                $http.put(`api/order.php?orderID=${$scope.selectedOrderID}&status=3`);
-                $scope.orders.filter(x => x.orderID == $scope.selectedOrderID)[0].status = 3;
+                // if the order status is in pending stage.
+                if ($scope.orders.filter(x => x.orderID == $scope.selectedOrderID)[0].status == 0){
+                    $http.put(`api/order.php?orderID=${$scope.selectedOrderID}&status=3`);
+                    $scope.orders.filter(x => x.orderID == $scope.selectedOrderID)[0].status = 3;
+                } else {
+                    alert("You are not permitted to cancel a non-in-progressing order.");
+                }
+            }
+
+            // sorting
+
+            $scope.sortColumn = "orderID";
+            $scope.reverseSort = false;
+
+            $scope.sortData = function (column) {
+                $scope.reverseSort = ($scope.sortColumn == column) ? !$scope.reverseSort : false;
+                $scope.sortColumn = column;
             }
 		});
 	</script>

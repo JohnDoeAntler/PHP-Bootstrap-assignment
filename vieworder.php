@@ -113,7 +113,7 @@
 				$scope.timestamp = order.orderDate;				
 			});
 
-			$scope.total = () =>  $scope.orderparts.map(x => x.product.stockPrice * x.quantity).reduce((a, b) => a + b, 0);
+			$scope.total = () => !!!$scope.orderparts ? 0 : $scope.orderparts.map(x => x.product.stockPrice * x.quantity).reduce((a, b) => a + b, 0);
 		});
 	</script>
 </body>

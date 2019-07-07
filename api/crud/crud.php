@@ -13,8 +13,10 @@
 
 			foreach ($args as $key => $val)
 			{
+				$val = isQuote($val);
+
 				$headers[] = $key;
-				$values[] = "'$val'";
+				$values[] = $val;
 			}
 
 			$header = implode(", ", $headers);
@@ -38,13 +40,15 @@
 			
 			foreach ($args as $key => $val)
 			{
+				$val = isQuote($val);
+
 				if ($index == 0)
 				{
-					$str .= "WHERE $key = '$val'";
+					$str .= "WHERE $key = $val";
 				}
 				else 
 				{
-					$str .= "AND $key = '$val'";
+					$str .= "AND $key = $val";
 				}
 
 				$index++;
@@ -64,7 +68,7 @@
 			$rows[] = $row;
 		}
 
-		print json_encode($rows);
+		echo json_encode($rows, JSON_NUMERIC_CHECK);
 
 		$conn->close();
 	}
@@ -83,18 +87,20 @@
 			$index = 0;
 			foreach ($args as $key => $val)
 			{
+				$val = isQuote($val);
+
 				// SELECT FIRST ARG AS CONDITION
 				if ($index == 0)
 				{
-					$condition = "$key = '$val'";
+					$condition = "$key = $val";
 				}
 				else if (empty($modifications))
 				{
-					$modifications .= "$key = '$val'";
+					$modifications .= "$key = $val";
 				}
 				else
 				{
-					$modifications .= ", $key = '$val'";
+					$modifications .= ", $key = $val";
 				}
 
 				// update session password.
@@ -108,6 +114,8 @@
 		}
 
 		print ($conn->query("UPDATE `$table` SET $modifications WHERE $condition") ? "true" : "false");
+
+		echo "UPDATE `$table` SET $modifications WHERE $condition";
 
 		$conn->close();
 	}
@@ -125,12 +133,14 @@
 			$index = 0;
 			foreach ($args as $key => $val)
 			{
+				$val = isQuote($val);
+
 				if ($index == 0)
 				{
-					$condition .= " WHERE $key = '$val'";
+					$condition .= " WHERE $key = $val";
 				}else
 				 {
-					$condition .= " AND $key = '$val'";
+					$condition .= " AND $key = $val";
 				}
 				$index++;
 			}
@@ -139,5 +149,13 @@
 		}
 
 		$conn->close();
+	}
+
+	function isQuote($str){
+		if ($str[0] == "!"){
+			return ltrim($str, "!");
+		}else {
+			return "'$str'";
+		}
 	}
 ?>

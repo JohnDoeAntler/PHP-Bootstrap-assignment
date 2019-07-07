@@ -105,12 +105,7 @@
 			$scope.edit = () => {
 				if (document.forms.form.reportValidity())
 				{
-					$http.put(`api/part.php?partNumber=${$scope.partNumber}&partName=${$scope.partName}&stockQuantity=${$scope.stockQuantity}&stockPrice=${$scope.stockPrice}&email=<?php echo $_SESSION["username"]?>`).then(
-						function (response)
-						{
-							console.log(response);
-						}
-					);
+					$http.put(`api/part.php?partNumber=${$scope.partNumber}&partName=${$scope.partName}&stockQuantity=${$scope.stockQuantity}&stockPrice=${$scope.stockPrice}&email=<?php echo $_SESSION["username"]?>`);
 				}
 			}
 		});
